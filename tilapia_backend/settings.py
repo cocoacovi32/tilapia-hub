@@ -35,7 +35,11 @@ SECRET_KEY = 'django-insecure-c!2u#s2v^xsx_0b$enuw@tmso&r$_q97q*l!v#-0im036)z*2^
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    "tilapia-hub.onrender.com",
+    "localhost",
+    "127.0.0.1"
+]
 
 
 # Application definition
