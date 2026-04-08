@@ -1,4 +1,4 @@
-# settings.py — Railway-ready version
+# settings.py — FINAL PRODUCTION READY (Render + Railway)
 
 from pathlib import Path
 from datetime import timedelta
@@ -11,12 +11,18 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # ================= SECURITY =================
 SECRET_KEY = config('SECRET_KEY', default='django-insecure-temp-key')
+
 DEBUG = config('DEBUG', default=False, cast=bool)
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='*').split(',')
+
+# ✅ SAFE + FLEXIBLE
+ALLOWED_HOSTS = config(
+    'ALLOWED_HOSTS',
+    default='localhost,127.0.0.1,web-production-04b0.up.railway.app,tilapia-hub.onrender.com',
+    cast=lambda v: [s.strip() for s in v.split(',')]
+)
 
 # ================= APPS =================
 INSTALLED_APPS = [
-    # Django default apps
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -24,12 +30,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    # External
     'rest_framework',
     'rest_framework_simplejwt',
     'corsheaders',
 
-    # Your apps
     'auth_app',
     'marketplace_app',
     'calculator_app',
@@ -42,7 +46,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # for serving React static files
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # 🔥 important
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -53,13 +57,14 @@ MIDDLEWARE = [
 
 # ================= URL =================
 ROOT_URLCONF = 'tilapia_backend.urls'
+WSGI_APPLICATION = 'tilapia_backend.wsgi.application'
 
 # ================= TEMPLATES =================
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            BASE_DIR / ".." / "tilapia-hub font end1" / "build"  # React index.html
+            BASE_DIR / "frontend" / "build",  # ✅ FIXED (must match your folder)
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -72,12 +77,13 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'tilapia_backend.wsgi.application'
-
 # ================= DATABASE =================
 DATABASES = {
     'default': dj_database_url.config(
-        default=config('DATABASE_URL', default=f'sqlite:///{BASE_DIR / "db.sqlite3"}')
+        default=config(
+            'DATABASE_URL',
+            default=f'sqlite:///{BASE_DIR / "db.sqlite3"}'
+        )
     )
 }
 
@@ -100,10 +106,15 @@ USE_TZ = True
 
 # ================= STATIC FILES =================
 STATIC_URL = '/static/'
+
 STATICFILES_DIRS = [
-    BASE_DIR / ".." / "tilapia-hub font end1" / "build" / "static"  # React static files
+    BASE_DIR / "frontend" / "build" / "static",  # ✅ FIXED
 ]
+
 STATIC_ROOT = BASE_DIR / "staticfiles"
+
+# ✅ REQUIRED for production static serving
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 # ================= CORS =================
 CORS_ALLOW_ALL_ORIGINS = True
