@@ -1,0 +1,1 @@
+web: gunicorn tilapia_backend.wsgi --log-file -

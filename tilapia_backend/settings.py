@@ -1,19 +1,18 @@
+# settings.py — Railway-ready version
+
 from pathlib import Path
 from datetime import timedelta
 import os
+from decouple import config
+import dj_database_url
 
 # ================= BASE =================
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-change-this'
-
-# ================= DEBUG & HOSTS =================
-DEBUG = False  # Set to False for production
-ALLOWED_HOSTS = [
-    "tilapia-hub.onrender.com",
-    "localhost",
-    "127.0.0.1"
-]
+# ================= SECURITY =================
+SECRET_KEY = config('SECRET_KEY', default='django-insecure-temp-key')
+DEBUG = config('DEBUG', default=False, cast=bool)
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='*').split(',')
 
 # ================= APPS =================
 INSTALLED_APPS = [
@@ -77,10 +76,9 @@ WSGI_APPLICATION = 'tilapia_backend.wsgi.application'
 
 # ================= DATABASE =================
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': dj_database_url.config(
+        default=config('DATABASE_URL', default=f'sqlite:///{BASE_DIR / "db.sqlite3"}')
+    )
 }
 
 # ================= AUTH =================
