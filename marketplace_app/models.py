@@ -1,16 +1,14 @@
 # marketplace_app/models.py
-# marketplace_app/models.py
 
 from django.db import models
-from django.conf import settings   # ✅ correct import
-
+from django.conf import settings
 
 # -----------------------------
 # Farmer Model
 # -----------------------------
 class Farmer(models.Model):
     user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,   # ✅ FIXED HERE
+        settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name="farmers",
         null=True,
@@ -36,7 +34,7 @@ class Fish(models.Model):
         null=True,
         blank=True
     )
-    name = models.CharField(max_length=100)   # e.g. Tilapia
+    name = models.CharField(max_length=100)  # e.g., Tilapia
     price = models.FloatField()
     quantity = models.IntegerField()
     description = models.TextField(blank=True, null=True)
@@ -48,7 +46,7 @@ class Fish(models.Model):
 
 
 # -----------------------------
-# Product Model (Optional)
+# Product Model
 # -----------------------------
 class Product(models.Model):
     name = models.CharField(max_length=100)
@@ -58,3 +56,14 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
+
+
+# -----------------------------
+# Order Model
+# -----------------------------
+class Order(models.Model):
+    total = models.FloatField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Order {self.id} - {self.total}"

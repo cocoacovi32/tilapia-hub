@@ -1,4 +1,19 @@
-from django.http import HttpResponse
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from django.contrib.auth.models import User
+from rest_framework import status
+from .serializers import UserSerializer
 
-def test_auth(request):
-    return HttpResponse("Auth app working!")
+@api_view(['POST'])
+def register(request):
+    serializer = UserSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response({"message": "User registered successfully"}, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET'])
+def get_farmers(request):
+    # Example: return all users as "farmers"
+    users = User.objects.all().values("id", "username", "email")
+    return Response(list(users))

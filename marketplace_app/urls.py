@@ -1,36 +1,42 @@
-from django.urls import path
-from . import views
-
-urlpatterns = [
-    path('test/', views.test_marketplace, name='test_marketplace'),
-]
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
+from . import views
 from .views import ProductViewSet
 
+# Router for products
 router = DefaultRouter()
 router.register(r'products', ProductViewSet)
 
 urlpatterns = [
+    # Home / test
+    path('', views.home),
+    path('test/', views.test_marketplace),
+
+    # Auth
+    path('signup/', views.signup),
+    path('login/', views.login),
+
+    # Farmers
+    path('farmers/', views.farmers),
+    path('farmers/add/', views.add_farmer, name='add_farmer'),
+
+
+    # Fish
+    path('fish/', views.fish),
+    path('fish/add/', views.add_fish, name='add_fish'),
+    # Orders ✅ (IMPORTANT)
+
+    path('orders/', views.get_orders),
+    path('orders/create/', views.create_order),
+
+    # Protected actions
+    path('buy-fish/<int:id>/', views.buy_fish),
+    path('my-fish/', views.my_fish),
+    path('add-fish/', views.add_fish),
+
+    # Router endpoints (products)
     path('', include(router.urls)),
+
+    path('mpesa/stk-push/', views.mpesa_stk_push, name='mpesa_stk_push'),
+
 ]
-# backend/market/urls.py
-
-from django.urls import path
-from . import views
-
-urlpatterns = [
-    path('signup/', views.signup, name='signup'),
-    path('login/', views.login, name='login'),
-    path('farmers/', views.farmers, name='farmers'),
-    path('fish/', views.fish, name='fish'),
-]
-
-
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-
-@api_view(['POST'])
-def buy_fish(request, id):
-    # Temporary placeholder logic
-    return Response({"message": f"Buy fish endpoint works for fish id {id}!"})
