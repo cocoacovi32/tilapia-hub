@@ -8,17 +8,31 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # ================= SECURITY =================
 SECRET_KEY = config('SECRET_KEY', default='unsafe-secret')
-DEBUG = config('DEBUG', default=False, cast=bool)
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='*').split(',')
 
-# Railway / Proxy Fix
+# TEMP: keep True until everything works, then set False
+DEBUG = True
+
+ALLOWED_HOSTS = [
+    'web-production-04b0.up.railway.app',
+    'localhost',
+    '127.0.0.1'
+]
+
+# ================= RAILWAY / PROXY FIX =================
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 USE_X_FORWARDED_HOST = True
+USE_X_FORWARDED_PORT = True
 
-# CSRF (important for production)
+# ================= CSRF =================
 CSRF_TRUSTED_ORIGINS = [
-    'https://web-production-04b0.up.railway.app'
+    'https://web-production-04b0.up.railway.app',
+    'http://web-production-04b0.up.railway.app'
 ]
+
+# Prevent 400 issues
+SECURE_SSL_REDIRECT = False
+SESSION_COOKIE_SECURE = False
+CSRF_COOKIE_SECURE = False
 
 # ================= APPS =================
 INSTALLED_APPS = [
@@ -63,7 +77,7 @@ ROOT_URLCONF = 'tilapia_backend.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / "frontend" / "build"],  # React build
+        'DIRS': [BASE_DIR / "frontend" / "build"],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -80,7 +94,7 @@ WSGI_APPLICATION = 'tilapia_backend.wsgi.application'
 # ================= DATABASE =================
 DATABASES = {
     'default': dj_database_url.config(
-        default=config('DATABASE_URL', default=f'sqlite:///{BASE_DIR / "db.sqlite3"}')
+        default=config('DATABASE_URL', default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}")
     )
 }
 
