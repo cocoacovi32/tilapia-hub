@@ -16,11 +16,11 @@ DEBUG = config('DEBUG', default=False, cast=bool)
 
 # ✅ SAFE + FLEXIBLE
 ALLOWED_HOSTS = config(
+ALLOWED_HOSTS = config(
     'ALLOWED_HOSTS',
     default='localhost,127.0.0.1,web-production-04b0.up.railway.app,tilapia-hub.onrender.com',
     cast=lambda v: [s.strip() for s in v.split(',')]
 )
-
 # ================= APPS =================
 INSTALLED_APPS = [
     'django.contrib.admin',
